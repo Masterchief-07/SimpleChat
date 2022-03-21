@@ -4,19 +4,10 @@ src = src/
 test = test/
 params = -Wall -Werror -Wpedantic -pthreads -std=c++17 -I$(inc) -lncurses
 
-all: main test
+all: main
 
 main: main.cpp $(src)window.cpp
 	$(cc) $(params) $^ -o $@
 
-test: $(test)testserver $(test)testclient $(test)testwindow
-
-$(test)testwindow: $(test)testwindow.cpp $(src)window.cpp 
-	$(cc) $(params) $^ -o $@
-$(test)testclient: $(test)testclient.cpp $(src)client.cpp 
-	$(cc) $(params) $^ -o $@
-$(test)testserver: $(test)testserver.cpp $(src)server.cpp 
-	$(cc) $(params) $^ -o $@
-
 clean:
-	rm -rf main  $(test)testserver $(test)testclient $(test)testwindow
+	rm -rf main  
