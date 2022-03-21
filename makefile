@@ -1,14 +1,20 @@
 cc = clang++
 inc = include/
 src = src/
-build = build/
-params = -Wall -Werror -Wpedantic -pthreads -std=c++17 -I$(inc)
+test = test/
+params = -Wall -Werror -Wpedantic -pthreads -std=c++17 -I$(inc) -lncurses
 
-all: main
+all: main test
 
-main: window.o
+main: main.cpp $(src)window.cpp
 	$(cc) $(params) $^ -o $@
 
-window.o: $(src)window.cpp
-	$(cc) $(params) -lncurses -c $^
+test: $(test)testserver $(test)testclient $(test)testwindow
+
+$(test)testwindow: $(test)testwindow.cpp $(src)window.cpp 
+	$(cc) $(params) $^ -o $@
+$(test)testclient: $(test)testclient.cpp $(src)window.cpp 
+	$(cc) $(params) $^ -o $@
+$(test)testserver: $(test)testserver.cpp $(src)window.cpp 
+	$(cc) $(params) $^ -o $@
 

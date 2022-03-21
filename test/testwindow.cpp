@@ -1,5 +1,4 @@
-#include <iostream>
-#include <window.hpp>
+#include<window.hpp>
 
 int main()
 {

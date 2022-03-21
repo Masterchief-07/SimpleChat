@@ -1,8 +1,7 @@
 #include <iostream>
-#include <window.hpp>
+#include <server.hpp>
 
 int main()
 {
-	Window mywin;
 	return 0;
 }

@@ -4,6 +4,7 @@ Window::Window()
 {
 	initscr();
 	mywin = stdscr;
+	getch();
 
 }
 
