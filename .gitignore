@@ -33,6 +33,5 @@
 
 #special file
 main
-test/testwindow
-test/testserver
-test/testclient
+
+test/
