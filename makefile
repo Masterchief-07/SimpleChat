@@ -13,9 +13,9 @@ test: $(test)testserver $(test)testclient $(test)testwindow
 
 $(test)testwindow: $(test)testwindow.cpp $(src)window.cpp 
 	$(cc) $(params) $^ -o $@
-$(test)testclient: $(test)testclient.cpp $(src)window.cpp 
+$(test)testclient: $(test)testclient.cpp $(src)client.cpp 
 	$(cc) $(params) $^ -o $@
-$(test)testserver: $(test)testserver.cpp $(src)window.cpp 
+$(test)testserver: $(test)testserver.cpp $(src)server.cpp 
 	$(cc) $(params) $^ -o $@
 
 clean:
