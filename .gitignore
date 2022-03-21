@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+#special file
+main
+test/testwindow
+test/testserver
+test/testclient
