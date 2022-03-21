@@ -18,3 +18,5 @@ $(test)testclient: $(test)testclient.cpp $(src)window.cpp
 $(test)testserver: $(test)testserver.cpp $(src)window.cpp 
 	$(cc) $(params) $^ -o $@
 
+clean:
+	rm -rf main  $(test)testserver $(test)testclient $(test)testwindow
