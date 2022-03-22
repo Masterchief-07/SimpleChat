@@ -7,17 +7,17 @@
 class Menu
 {
 	public:
-		Menu(WINDOW *parent, int maxY, int maxX);
+		Menu(int maxY, int maxX);
 		~Menu();
 		void display();
 		int selection();
+		static const size_t NBMENU = 5;
 
 	
 	private:
-		static const size_t NBMENU = 5;
 		int m_sizeX, m_sizeY;
-		WINDOW* m_win;
 		unsigned short m_selection;
+		WINDOW* m_win, *m_parent;
 		std::array<std::string, NBMENU> m_menu = {
 			"Server",
 			"Client",
@@ -36,12 +36,14 @@ class CLient;
 class ClientWin
 {
 	public:
-		ClientWin(WINDOW* parent, int sizeY, int sizeX);
+		ClientWin( int sizeY, int sizeX);
 		~ClientWin();
+		void display();
+		void launch();
 
 	private:
-		int m_sizeY, m_sizeX;
-		WINDOW *m_winAff, *m_winText;
+		int m_size1Y, m_size1X, m_size2Y, m_size2X;
+		WINDOW *m_winAff, *m_winText, *m_parent;
 
 };
 
