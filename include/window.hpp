@@ -1,12 +1,16 @@
 #include <iostream>
-#include <ftxui/screen/screen.hpp>
-#include <ftxui/dom/elements.hpp>
 
 class Window
 {
 	public:
 		Window();
 		~Window();
-		
+	
+	private:
+		void selectionWindow();
+		void configServer();
+		void configClient();
+		void serverWindow();
+		void clientWindow();
 
 };
