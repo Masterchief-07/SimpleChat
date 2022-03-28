@@ -79,8 +79,10 @@ void ClientWin::display()
 void ClientWin::launch()
 {
 	int ch=0;
-	while((ch = getch()) != '\n')
+	do
+	{
 		this->display();
+	}while((ch = getch()) != '\n');
 
 }
 

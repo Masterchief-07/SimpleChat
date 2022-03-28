@@ -33,5 +33,5 @@
 
 #special file
 main
-
+build/
 test/
