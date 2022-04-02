@@ -9,14 +9,15 @@ class Server
 	public:
 		Server() noexcept;
 		void start();
+		void run();
 
 	private:
-		void read();
-		void write();
+		void accept();
+		void read(std::shared_ptr<asio::ip::tcp::socket> socket_);
+		void write(std::shared_ptr<asio::ip::tcp::socket> socket_);
 		void broadcast();
-		asio::io_context ioCtx_;
+		asio::io_context io_;
 		asio::ip::tcp::acceptor acceptor_;
-		asio::ip::tcp::socket socket_;
 		std::string message_;
 
 };
