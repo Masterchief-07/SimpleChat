@@ -2,7 +2,6 @@
 
 Connection::Connection(asio::ip::tcp::socket socket):socket_{std::move(socket)}
 {
-	
 }
 
 void Connection::read()

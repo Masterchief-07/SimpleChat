@@ -29,7 +29,9 @@ void Server::accept()
 				std::cerr<<"ACCEPTOR ERROR\n";
 				return;
 			}
-			std::make_shared<Connection>(std::move(socket))->read();
+			auto newconnect = std::make_shared<Connection>(std::move(socket));
+			newconnect->read();
+			connectSet_.insert(std::move(newconnect));
 			
 
 		});

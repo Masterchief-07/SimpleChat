@@ -3,7 +3,7 @@
 #define BOOST_ASIO_STANDALONE
 #include <connection.hpp>
 #include <asio.hpp>
-#include <list>
+#include <set>
 #include <iostream>
 
 class Server
@@ -19,6 +19,6 @@ class Server
 		asio::ip::tcp::acceptor acceptor_;
 		//std::string message_;
 		//std::unique_ptr<std::thread> ioThr_;
-		//std::list<std::shared_ptr<Connection>> connectList_;
+		std::set<std::shared_ptr<Connection>> connectSet_;
 
 };
