@@ -1,36 +1,40 @@
 #include <connection.hpp>
 
-void Connection::read(std::shared_ptr<tcp::socket> socket_)
+Connection::Connection(asio::ip::tcp::socket socket):socket_{std::move(socket)}
 {
-	asio::async_read_until(*socket_, asio::dynamic_buffer(message_), '\n', [this, socket_](asio::error_code ec, size_t transfered)
+	
+}
+
+void Connection::read()
+{
+	asio::async_read_until(socket_, asio::dynamic_buffer(message_), '\n', [self=shared_from_this()](asio::error_code ec, size_t transfered)
 			{
-				if(message_[0] == 'S' && message_[1] == 'T'&& message_[2] == 'O'&& message_[3] == 'P')
+				if(self->message_[0] == 'S' && self->message_[1] == 'T'&& self->message_[2] == 'O'&& self->message_[3] == 'P')
 				{
 					return ;
 				}
 				else if(ec)
 				{
 					std::cout<<"error reading"<<"\n";
-					this->read(socket_);
+					self->read();
 				}
 				else
 				{
-					std::cout<<message_;
-					this->write(socket_);
+					std::cout<<self->message_;
+					self->write();
 				}
 			});
 }
 
-void Connection::write(std::shared_ptr<tcp::socket> socket_)
+void Connection::write()
 {
-	asio::error_code ec;
-	asio::async_write(*socket_, asio::buffer(message_), [this, socket_](asio::error_code ec, size_t transfered)
+	asio::async_write(socket_, asio::buffer(message_), [self=shared_from_this()](asio::error_code ec, size_t transfered)
 			{
 				if(ec)
 				{
 					std::cerr<<"ERROR WRITING\n";
 				}
-				message_.clear();
-				this->read(socket_);
+				self->message_.clear();
+				self->read();
 			});
 }

@@ -14,25 +14,25 @@ void Server::start()
 
 void Server::run()
 {
-	ioThr_ = std::make_unique<std::thread>([this](){this->io_.run();});
+	//ioThr_ = std::make_unique<std::thread>([this](){this->io_.run();});
+	io_.run();
 }
 
 void Server::accept()
 {
 	acceptor_.async_accept([this](asio::error_code ec, tcp::socket socket)
+		{
+			this->accept();
+			//connectList_.push_back(std::make_shared<Connection>(std::move(socket)));
+			if(ec)
 			{
-				std::shared_ptr<tcp::socket> socket_ = std::make_shared<tcp::socket>(std::move(socket));
-				this->accept();
-				if(ec)
-				{
-					std::cout<<"error accepting"<<std::endl;
-					this->accept();
-				}
-				else
-				{
-					this->read(socket_);
-				}
-			});
+				std::cerr<<"ACCEPTOR ERROR\n";
+				return;
+			}
+			std::make_shared<Connection>(std::move(socket))->read();
+			
+
+		});
 }
 
 
