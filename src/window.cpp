@@ -31,20 +31,16 @@ void Window::selectionWindow()
 	
 	auto render = Renderer(select_container, [&]{ return
 			vbox({
-				filler(),
-				hbox({ filler(), text("SIMPLE CHAT") | bold , filler()}) | border,
+				hbox({ text("SIMPLE CHAT") | bold }) | border |center,
 				hbox({
-					filler(),
 					vbox({
 						server_btn->Render(),
 						client_btn->Render(),
 					//	settings_btn->Render(),
 						quit_btn->Render(),
 						}) | border,
-					filler(),
-				}),
-				filler(),
-			});
+				}) | center,
+			}) | center;
 		});
 
 	screen.Loop(render);
@@ -73,19 +69,15 @@ void Window::configServer()
 
 	auto render = Renderer(container, [&]{ return
 		vbox({
-			filler(),
 			hbox({
-				filler(),
 				vbox({
 					text("SERVER") | bold,
 					hbox({text("IP: "), separator(), ip_input->Render()}),
 					hbox({text("PORT: "), separator(), port_input->Render()}),
 					hbox({create_btn->Render(), cancel_btn->Render()}),
 				}) | border,
-				filler(),
-			}),
-			filler(),
-		});
+			}) | center,
+		}) | center;
 	});
 	
 	screen.Loop(render);
@@ -102,7 +94,7 @@ void Window::configClient()
 	Component username_input = Input(&username, " ");
 	Component ip_input = Input(&server_ip, "127.0.0.1");
 	Component port_input = Input(&server_port, "60000");
-	Component create_btn = Button("CREATE", []{});
+	Component create_btn = Button("CREATE", [this]{this->errorMessage("error");});
 	Component cancel_btn = Button("CANCEL", screen.ExitLoopClosure());
 
 	auto container = Container::Vertical({
@@ -115,9 +107,7 @@ void Window::configClient()
 
 	auto render = Renderer(container, [&]{ return
 		vbox({
-			filler(),
 			hbox({
-				filler(),
 				vbox({
 					text("SERVER") | bold,
 					hbox({text("Username: "), separator(), username_input->Render()}),
@@ -125,12 +115,61 @@ void Window::configClient()
 					hbox({text("PORT: "), separator(), port_input->Render()}),
 					hbox({create_btn->Render(), cancel_btn->Render()}),
 				}) | border,
-				filler(),
-			}),
-			filler(),
-		});
+			}) | center,
+		}) | center;
 	});
 	
 	screen.Loop(render);
 
 }
+
+void Window::clientWindow(std::string const& username, std::string const& ip, std::string const& port)
+{	
+	ClientWindow client(username, ip, port);
+	
+	if(client.Connect())
+		client.display();
+	else
+		this->errorMessage(client.error());
+}
+void Window::errorMessage(std::string const& ec)
+{
+	auto screen = ScreenInteractive::Fullscreen();
+	auto container = Container::Horizontal({
+		Button("OK", screen.ExitLoopClosure()),
+		});
+	auto render = Renderer(container, [&]{ return
+			hbox({
+				vbox({
+					text(ec) | bold,
+					container->Render(),
+					}) | center,
+				}) | center;
+			});
+
+	screen.Loop(render);
+}
+
+
+ClientWindow::ClientWindow(std::string const& username, std::string const& ip, std::string const& port):m_username{username}, m_ip{ip}, m_port{port}
+{
+
+}
+
+bool ClientWindow::Connect()
+{
+	return true;
+}
+
+void ClientWindow::display()
+{
+
+}
+
+std::string ClientWindow::error()
+{
+	return " ";
+}
+
+
+
