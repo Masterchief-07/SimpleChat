@@ -29,13 +29,32 @@ void Server::accept()
 				std::cerr<<"ACCEPTOR ERROR\n";
 				return;
 			}
-			auto newconnect = std::make_shared<Connection>(std::move(socket));
-			newconnect->read();
+			auto newconnect = std::make_shared<Connection>(std::move(socket), *this);
+			newconnect->connect();
 			connectSet_.insert(std::move(newconnect));
-			
-
 		});
 }
 
+void Server::sendTo(std::string message, ConnectionPtr connect)
+{
+	if(connect->isConnected())
+	{
+		connect->write(message);
+	}
+	else
+	{
+	}
+}
+
+void Server::sendToAll(std::string message, ConnectionPtr connect)
+{
+	for(auto& connected: connectSet_)
+	{
+		if(connected!=connect && connected->isConnected())
+		{
+			connected->write(message);
+		}
+	}
+}
 
 

@@ -1,16 +1,21 @@
 #pragma once
-#define ASIO_STANDALONE
-#define BOOST_ASIO_STANDALONE
+//#define ASIO_STANDALONE
+//#define BOOST_ASIO_STANDALONE
 #include <connection.hpp>
 #include <asio.hpp>
 #include <set>
 #include <iostream>
 
+class Connection;
+typedef std::shared_ptr<Connection> ConnectionPtr ;
+typedef std::set<ConnectionPtr> ConnectionSet;
 class Server
 {
 	public:
 		Server() noexcept;
 		void start();
+		void sendTo(std::string message, ConnectionPtr connect);
+		void sendToAll(std::string message, ConnectionPtr connect=NULL);
 
 	private:
 		void run();
@@ -19,6 +24,7 @@ class Server
 		asio::ip::tcp::acceptor acceptor_;
 		//std::string message_;
 		//std::unique_ptr<std::thread> ioThr_;
-		std::set<std::shared_ptr<Connection>> connectSet_;
+		ConnectionSet connectSet_;
+
 
 };
