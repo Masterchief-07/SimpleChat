@@ -15,7 +15,8 @@ class Server
 		Server() noexcept;
 		void start();
 		void sendTo(std::string message, ConnectionPtr connect);
-		void sendToAll(std::string message, ConnectionPtr connect=NULL);
+		void sendToAll(std::string message);
+		void leave(ConnectionPtr connect);
 
 	private:
 		void run();

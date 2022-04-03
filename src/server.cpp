@@ -46,15 +46,15 @@ void Server::sendTo(std::string message, ConnectionPtr connect)
 	}
 }
 
-void Server::sendToAll(std::string message, ConnectionPtr connect)
+void Server::sendToAll(std::string message)
 {
 	for(auto& connected: connectSet_)
 	{
-		if(connected!=connect && connected->isConnected())
-		{
-			connected->write(message);
-		}
+		connected->write(message);
 	}
 }
 
-
+void Server::leave(ConnectionPtr connect)
+{
+	this->connectSet_.erase(connect);		
+}

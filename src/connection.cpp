@@ -61,6 +61,7 @@ void Connection::write(std::string message)
 void Connection::close()
 {
 	this->socket_.close();
+	this->server_.leave(shared_from_this());
 	this->isConnected_ = false;
 }
 
