@@ -127,46 +127,29 @@ void Window::configClient()
 void Window::serverWindow(std::string const& ip, std::string const& port)
 {
 	auto screen = ScreenInteractive::Fullscreen();
-	int counter=0;
-
-	std::vector<std::vector<std::string>> messageContent = {
-			{"Version", "Marketing name", "Release date", "API level", "Runtime"},
-			      {"2.3", "Gingerbread", "February 9 2011", "10", "Dalvik 1.4.0"},
-			      {"4.0", "Ice Cream Sandwich", "October 19 2011", "15", "Dalvik"},
-			      {"4.1", "Jelly Bean", "July 9 2012", "16", "Dalvik"},
-			      {"4.2", "Jelly Bean", "November 13 2012", "17", "Dalvik"},
-			      {"4.3", "Jelly Bean", "July 24 2013", "18", "Dalvik"},
-			      {"4.4", "KitKat", "October 31 2013", "19", "Dalvik and ART"},
-			      {"5.0", "Lollipop", "November 3 2014", "21", "ART"},
-			      {"5.1", "Lollipop", "March 9 2015", "22", "ART"},
-			      {"6.0", "Marshmallow", "October 5 2015", "23", "ART"},
-			      {"7.0", "Nougat", "August 22 2016", "24", "ART"},
-			      {"7.1", "Nougat", "October 4 2016", "25", "ART"},
-			      {"8.0", "Oreo", "August 21 2017", "26", "ART"},
-			      {"8.1", "Oreo", "December 5 2017", "27", "ART"},
-			      {"9", "Pie", "August 6 2018", "28", "ART"},
-			      {"10", "10", "September 3 2019", "29", "ART"},
-			      {"11", "11", "September 8 2020", "30", "ART"},	
-			      };
-	messageContent.push_back({"new", "new", "new", "new","new"});
-	Table messageTable = Table(messageContent);
+	Elements message = {
+			hbox({text("jonathan"),filler(), text("HELLO WORLD")}),
+			hbox({text("josue"),filler(), text("HELLO WORLD")}),
+			hbox({text("jonathan"),filler(), text("how are you?")}),
+			hbox({text("josue"),filler(), text("fine and you?")})
+			};
 	std::string wintitle = "message";
 
-	auto messageTableRender = messageTable.Render();	
-	Component button = Button("ADD", [&]{messageContent.push_back({"new", "new", "new", "new","new"}); 
-						counter+=1;
-						wintitle+=" hi";});
+	Component button = Button("ADD", [&]{ message.push_back(hbox({text("josue"),filler(), text("fine and you?")}));
+						});
 
-	auto textScreen = Renderer(button, [&]{
-			return vbox({window(text(wintitle  + std::to_string(counter)),  messageTableRender ),
-					button->Render()}) | size(WIDTH, EQUAL, 80);
+	auto messageList = Renderer([&]{ return vbox(message) ;}); 
+
+	auto textScreen = Renderer([&]{
+			return vbox({window(text(wintitle), messageList->Render() | vscroll_indicator |frame| size(HEIGHT, LESS_THAN, 20) ) })
+				| size(WIDTH, EQUAL, 80);
 			});
 	auto textScreen2 = Renderer([&]{
 			return window(text("CLIENTS"), text("text screen") | center) | flex;
 			});
 	
 
-	screen.Loop(Container::Horizontal({textScreen, textScreen2}));
+	screen.Loop(Container::Horizontal({textScreen, textScreen2, button}));
 	
 
 
