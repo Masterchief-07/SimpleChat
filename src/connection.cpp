@@ -35,7 +35,7 @@ void Connection::read()
 				}
 				else if(ec)
 				{
-					std::cout<<"error reading"<<"\n";
+					std::cerr<<"error reading"<<"\n";
 				}
 				else
 				{
