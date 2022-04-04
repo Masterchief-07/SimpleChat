@@ -127,15 +127,16 @@ void Window::configClient()
 void Window::serverWindow(std::string const& ip, std::string const& port)
 {
 	auto screen = ScreenInteractive::Fullscreen();
-	Elements message = {
-			hbox({text("jonathan"),filler(), text("HELLO WORLD")}),
-			hbox({text("josue"),filler(), text("HELLO WORLD")}),
-			hbox({text("jonathan"),filler(), text("how are you?")}),
-			hbox({text("josue"),filler(), text("fine and you?")})
-			};
+		auto message = Container::Vertical({
+			Renderer([]{return hbox({text("jonathan"),filler(), text("HELLO WORLD")});}),
+			Renderer([]{return hbox({text("jonathan"),filler(), text("HELLO WORLD")});}),
+			Renderer([]{return hbox({text("jonathan"),filler(), text("HELLO WORLD")});}),
+			Renderer([]{return hbox({text("jonathan"),filler(), text("HELLO WORLD")});}),
+			});
+
 	std::string wintitle = "message";
 
-	Component button = Button("ADD", [&]{ message.push_back(hbox({text("josue"),filler(), text("fine and you?")}));
+	Component button = Button("ADD", [&]{ message->Add(Renderer([]{return hbox({text("jonathan"),filler(), text("HELLO WORLD")});}));
 						});
 
 	auto messageList = Renderer([&]{ return vbox(message) ;}); 
