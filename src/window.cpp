@@ -127,7 +127,7 @@ void Window::configClient()
 void Window::serverWindow(std::string const& ip, std::string const& port)
 {
 	auto screen = ScreenInteractive::Fullscreen();
-		auto message = Container::Vertical({
+		auto messageList = Container::Vertical({
 			Renderer([]{return hbox({text("jonathan"),filler(), text("HELLO WORLD")});}),
 			Renderer([]{return hbox({text("jonathan"),filler(), text("HELLO WORLD")});}),
 			Renderer([]{return hbox({text("jonathan"),filler(), text("HELLO WORLD")});}),
@@ -136,13 +136,11 @@ void Window::serverWindow(std::string const& ip, std::string const& port)
 
 	std::string wintitle = "message";
 
-	Component button = Button("ADD", [&]{ message->Add(Renderer([]{return hbox({text("jonathan"),filler(), text("HELLO WORLD")});}));
+	Component button = Button("ADD", [&]{ messageList->Add(Renderer([]{return hbox({text("jonathan"),filler(), text("HELLO WORLD")});}));
 						});
 
-	auto messageList = Renderer([&]{ return vbox(message) ;}); 
-
 	auto textScreen = Renderer([&]{
-			return vbox({window(text(wintitle), messageList->Render() | vscroll_indicator |frame| size(HEIGHT, LESS_THAN, 20) ) })
+			return window(text(wintitle), messageList->Render() | vscroll_indicator |frame| size(HEIGHT, LESS_THAN, 20))
 				| size(WIDTH, EQUAL, 80);
 			});
 	auto textScreen2 = Renderer([&]{
