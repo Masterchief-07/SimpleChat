@@ -41,16 +41,14 @@ void Server::sendTo(std::string message, ConnectionPtr connect)
 	{
 		connect->write(message);
 	}
-	else
-	{
-	}
 }
 
 void Server::sendToAll(std::string message)
 {
 	for(auto& connected: connectSet_)
 	{
-		connected->write(message);
+		//connected->write(connected->getUsername()+'\n');
+		connected->write(message+'\n');
 	}
 }
 

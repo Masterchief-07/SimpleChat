@@ -16,8 +16,9 @@ class Connection: public std::enable_shared_from_this<Connection>
 		Connection(asio::ip::tcp::socket socket, Server& server);
 		void connect();
 		void write(std::string message);
-		const bool isConnected() const {return isConnected_;};
 		void close();
+		const bool isConnected() const {return isConnected_;};
+		const std::string getUsername()const {return username_;} 
 
 	private:
 		void read();

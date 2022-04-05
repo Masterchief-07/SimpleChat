@@ -7,8 +7,15 @@
 #include <iostream>
 
 class Connection;
-typedef std::shared_ptr<Connection> ConnectionPtr ;
+typedef std::shared_ptr<Connection> ConnectionPtr;
 typedef std::set<ConnectionPtr> ConnectionSet;
+
+class ClientInfo
+{
+	std::string username_;
+	ConnectionPtr connection_;
+};
+
 class Server
 {
 	public:
