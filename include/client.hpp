@@ -8,7 +8,7 @@ class Client
 {
 	public:
 		Client(std::string const& username);
-		bool connect(std::string const& ip, unsigned short port);
+		void connect(std::string const& ip, unsigned short port);
 		void send(std::string const& message);
 		void receive();
 		
@@ -25,6 +25,7 @@ class Client
 		asio::ip::tcp::endpoint endpoint_;
 
 		std::string username_;
+		std::string message_;
 		std::list<std::pair<std::string, std::string>> messagesReceive_; //username and message
 		std::queue<std::string>messagesSend_;
 };

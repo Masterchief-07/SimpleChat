@@ -7,7 +7,7 @@ Client::Client(std::string const& username):io_{},socket_{io_},endpoint_{},usern
 }
 
 
-bool Client::connect(std::string const& ip, unsigned short port)
+void Client::connect(std::string const& ip, unsigned short port)
 {
 	asio::error_code ec;
 	endpoint_.address(asio::ip::make_address(ip));
@@ -21,10 +21,9 @@ bool Client::connect(std::string const& ip, unsigned short port)
 		}
 
 		this->sendUsername();
-
+		this->receive();
 	});
 	this->io_.run();
-	return true;
 }
 
 void Client::sendUsername()
@@ -37,8 +36,6 @@ void Client::sendUsername()
 					return;
 				}
 				std::cout<<"CONNECTED"<<std::endl;
-				this->send("HELLO\n");
-				this->receive();
 			});
 				
 }
@@ -69,30 +66,16 @@ void Client::doSend()
 
 void Client::receive()
 {
-	std::string username;
-	asio::async_read_until(socket_,asio::dynamic_buffer(username), '\n',[username](asio::error_code ec, size_t transfered)
+	asio::async_read_until(socket_,asio::dynamic_buffer(message_), '\n',[this](asio::error_code ec, size_t transfered)
 			{
 				if(ec)
 				{
-					std::cerr<<"USERNAME NOT RECEIVE"<<std::endl;
+					std::cerr<<"MESSAGE NOT RECEIVED"<<std::endl;
 					return ;
 				}
-				std::cout<<username<<": ";
-				/*
-				std::string message;
-				asio::async_read_until(socket_,asio::dynamic_buffer(message), '\n',[message](asio::error_code ec, size_t transfererd)
-							{
-								if(ec)
-								{
-									std::cerr<<"MESSAGE NOT RECEIVE"<<std::endl;
-									return;
-								}
-								else
-								{
-									std::cout<<message<<std::endl;
-									//messagesReceive_.push_back({username, message});
-								}
-							});*/
+				std::cout<<message_;
+				message_.clear();
+				this->receive();
 			});
 }
 

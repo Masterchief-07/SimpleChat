@@ -11,7 +11,7 @@ void Connection::connect()
 //get the username from client
 void Connection::readUsername()
 {
-	/*asio::async_read_until(socket_, asio::dynamic_buffer(username_), '\n', [self=shared_from_this()]
+	asio::async_read_until(socket_, asio::dynamic_buffer(username_), '\n', [this,self=shared_from_this()]
 			(asio::error_code ec, size_t transfered)
 			{
 				if(ec)
@@ -19,19 +19,9 @@ void Connection::readUsername()
 					std::cerr<<"USERNAME ERROR"<<std::endl;
 					self->close();
 				}
+				std::cout<<"USERNAME: "<<username_<<std::endl;
+				this->read();
 			});
-	*/
-	asio::error_code ec;
-	asio::read_until(socket_, asio::dynamic_buffer(username_), '\n',ec);
-	if(ec)
-	{
-		std::cerr<<"USERNAME ERROR"<<std::endl;
-		this->close();
-		return;
-	}
-
-	this->read();
-
 }
 
 void Connection::read()
@@ -52,7 +42,7 @@ void Connection::read()
 				else
 				{
 					std::cout<<self->message_;
-					this->server_.sendToAll(self->message_);
+					this->server_.sendToAll(this->username_+": "+self->message_);
 				}
 				self->message_.clear();
 				self->read();
@@ -61,20 +51,13 @@ void Connection::read()
 
 void Connection::write(std::string message)
 {
-	asio::async_write(socket_, asio::buffer(username_), [this, &message, self=shared_from_this()](asio::error_code ec, size_t transfered)
+	asio::async_write(socket_, asio::buffer(message), [this, &message, self=shared_from_this()](asio::error_code ec, size_t transfered)
 			{
 				if(ec)
 				{
-					std::cerr<<"ERROR WRITING\n";
+					std::cerr<<"CONNECTIONS::ERROR WRITTING\n";
 				}
 
-				asio::async_write(socket_, asio::buffer(message), [self=shared_from_this()](asio::error_code ec, size_t transfered)
-				{
-					if(ec)
-					{
-						std::cerr<<"ERROR WRITING\n";
-					}
-				});
 			});
 }
 
