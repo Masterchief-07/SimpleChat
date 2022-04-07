@@ -28,7 +28,7 @@ void Client::connect(std::string const& ip, unsigned short port)
 
 void Client::sendUsername()
 {
-	asio::async_write(socket_, asio::buffer(username_+"\n"), [this](asio::error_code ec, size_t transfererd)
+	asio::async_write(socket_, asio::buffer(username_+"\n"), [](asio::error_code ec, size_t transfererd)
 			{
 				if(ec)
 				{

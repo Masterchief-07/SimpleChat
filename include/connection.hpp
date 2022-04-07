@@ -24,6 +24,7 @@ class Connection: public std::enable_shared_from_this<Connection>
 		void read();
 		void readUsername();
 		void broadcast();
+		bool isSocket;
 		std::string message_;
 		std::string username_;
 

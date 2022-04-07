@@ -51,7 +51,7 @@ void Connection::read()
 
 void Connection::write(std::string message)
 {
-	asio::async_write(socket_, asio::buffer(message), [this, &message, self=shared_from_this()](asio::error_code ec, size_t transfered)
+	asio::async_write(socket_, asio::buffer(message), [self=shared_from_this()](asio::error_code ec, size_t transfered)
 			{
 				if(ec)
 				{
