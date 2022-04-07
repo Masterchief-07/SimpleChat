@@ -1,5 +1,28 @@
 #include <iostream>
 #include <vector>
+#include <ftxui/component/screen_interactive.hpp>
+#include <ftxui/dom/elements.hpp>
+#include <ftxui/dom/table.hpp>
+#include <ftxui/component/component.hpp>
+
+class ClientWindow
+{
+	public:
+		ClientWindow();
+		~ClientWindow(){}
+		void render();
+	private:
+		ftxui::ScreenInteractive screen_;
+		ftxui::Component messageRender_;
+		ftxui::Component messageReceived_;
+		ftxui::Component sendButton_;
+		ftxui::Component exitButton_;
+		ftxui::Component textInput_;
+		std::string message_;
+		
+
+};
+
 
 class Window
 {

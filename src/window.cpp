@@ -1,8 +1,4 @@
 #include <window.hpp>
-#include <ftxui/component/screen_interactive.hpp>
-#include <ftxui/dom/elements.hpp>
-#include <ftxui/dom/table.hpp>
-#include <ftxui/component/component.hpp>
 using namespace ftxui;
 
 Window::Window()
@@ -179,4 +175,44 @@ void Window::errorMessage(std::string const& ec)
 
 
 
+ClientWindow::ClientWindow():screen_{ftxui::ScreenInteractive::Fullscreen()}, message_{}
+{
+	this->render();
 
+}
+
+void ClientWindow::render()
+{
+
+	MenuOption option = MenuOption::VerticalAnimated();
+	std::vector<std::string> messages_ = {"hello world", "hello you"};
+	int selector=0;
+	messageReceived_ = Menu(&messages_, &selector, option);	
+	//list of differents elements
+	sendButton_ = Button("SEND", [&]{messages_.push_back("add");});
+	exitButton_ = Button("EXIT", screen_.ExitLoopClosure());
+	textInput_ = Input(this->message_, "TAPE YOUR TEXT");
+	
+
+	//organise the differents elements
+	Component layouts = Container::Vertical({
+			messageReceived_,
+			textInput_,
+			Container::Horizontal({
+					sendButton_, exitButton_})
+			});
+
+	messageRender_ = Renderer(layouts,[this]{ return
+				vbox({
+					messageReceived_->Render() | flex | vscroll_indicator | frame,
+					textInput_->Render() | border,
+					hbox({
+						sendButton_->Render(),
+						exitButton_->Render(),
+					}) | center,
+				}) | flex;
+			});
+
+	screen_.Loop(messageRender_);
+
+}
