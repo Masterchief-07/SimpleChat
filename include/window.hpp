@@ -4,14 +4,18 @@
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/dom/table.hpp>
 #include <ftxui/component/component.hpp>
+#include <thread>
+#include <client.hpp>
+#include <server.hpp>
 
 class ClientWindow
 {
 	public:
-		ClientWindow();
+		ClientWindow(Client& client);
 		~ClientWindow(){}
 		void render();
 	private:
+		
 		ftxui::ScreenInteractive screen_;
 		ftxui::Component messageRender_;
 		ftxui::Component messageReceived_;
@@ -19,7 +23,7 @@ class ClientWindow
 		ftxui::Component exitButton_;
 		ftxui::Component textInput_;
 		std::string message_;
-		
+		Client &client_;
 
 };
 

@@ -7,8 +7,9 @@
 class Client
 {
 	public:
-		Client(std::string const& username);
-		void connect(std::string const& ip, unsigned short port);
+		Client(asio::io_context& io);
+		~Client();
+		bool connect(std::string const& username, std::string const& ip, unsigned short port);
 		void send(std::string const& message);
 		void receive();
 		
@@ -18,12 +19,14 @@ class Client
 		//-------METHODES-------
 		void doSend();
 		void sendUsername();
+		void close();
 
 		//--------ATTRIBUTS-------
-		asio::io_context io_;
+		asio::io_context& io_;
+		asio::io_context::strand strand_;
 		asio::ip::tcp::socket socket_;
 		asio::ip::tcp::endpoint endpoint_;
-
+		std::thread thread_;
 		std::string username_;
 		std::string message_;
 		std::list<std::pair<std::string, std::string>> messagesReceive_; //username and message

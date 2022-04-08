@@ -1,38 +1,40 @@
 #include <client.hpp>
 #include <iostream>
 
-Client::Client(std::string const& username):io_{},socket_{io_},endpoint_{},username_{username}
+Client::Client(asio::io_context& io):io_{io},strand_{io_},socket_{io_},endpoint_{}
 {
+}
 
+Client::~Client()
+{
 }
 
 
-void Client::connect(std::string const& ip, unsigned short port)
+bool Client::connect(std::string const& username, std::string const& ip, unsigned short port)
 {
+	username_ = username;
 	asio::error_code ec;
 	endpoint_.address(asio::ip::make_address(ip));
 	endpoint_.port(port);
-	socket_.async_connect(endpoint_, [this](asio::error_code ec)
+	socket_.connect(endpoint_, ec);
+	if(ec)
 	{
-		if(ec)
-		{
-			std::cerr<<"can't connect to: "<<endpoint_<<std::endl;
-			return ;
-		}
-
-		this->sendUsername();
-		this->receive();
-	});
-	this->io_.run();
+		std::cerr<<"ERROR: "<<ec.message()<<std::endl;
+		return false;
+	}
+	this->sendUsername();
+	this->receive();
+	return true;
 }
 
 void Client::sendUsername()
 {
-	asio::async_write(socket_, asio::buffer(username_+"\n"), [](asio::error_code ec, size_t transfererd)
+	asio::async_write(socket_, asio::buffer(username_+"\n"), [this](asio::error_code ec, size_t transfererd)
 			{
 				if(ec)
 				{
 					std::cerr<<"can't init the connection"<<std::endl;
+					close();
 					return;
 				}
 				std::cout<<"CONNECTED"<<std::endl;
@@ -42,15 +44,21 @@ void Client::sendUsername()
 
 void Client::send(std::string const& message)
 {
+	bool state = messagesSend_.empty();
 	messagesSend_.push(message);
-	this->doSend();
+	if(state)
+	{
+		asio::post(io_,strand_.wrap( [&](){
+			this->doSend();
+		}));
+	}
 }
 
 void Client::doSend()
 {
 	if(!messagesSend_.empty())
 	{
-		asio::async_write(socket_, asio::buffer(messagesSend_.front()), [this](asio::error_code ec, size_t transfered)
+		asio::async_write(socket_, asio::buffer(messagesSend_.front()+"\n"), [this](asio::error_code ec, size_t transfered)
 				{
 					if(ec)
 					{
@@ -71,6 +79,7 @@ void Client::receive()
 				if(ec)
 				{
 					std::cerr<<"MESSAGE NOT RECEIVED"<<std::endl;
+					close();
 					return ;
 				}
 				std::cout<<message_;
@@ -80,7 +89,10 @@ void Client::receive()
 }
 
 
-
+void Client::close()
+{
+	this->socket_.close();
+}
 
 
 

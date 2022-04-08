@@ -175,7 +175,7 @@ void Window::errorMessage(std::string const& ec)
 
 
 
-ClientWindow::ClientWindow():screen_{ftxui::ScreenInteractive::Fullscreen()}, message_{}
+ClientWindow::ClientWindow(Client& client):screen_{ftxui::ScreenInteractive::Fullscreen()}, message_{}, client_{client}
 {
 	this->render();
 
@@ -183,15 +183,21 @@ ClientWindow::ClientWindow():screen_{ftxui::ScreenInteractive::Fullscreen()}, me
 
 void ClientWindow::render()
 {
-
+	//for(int i=0; i<10; i++)
+	//	this->client_.send("hello "+std::to_string(i));
 	MenuOption option = MenuOption::VerticalAnimated();
-	std::vector<std::string> messages_ = {"hello world", "hello you"};
+	//std::vector<std::string> messages_ = {"hello world", "hello you"};
 	int selector=0;
-	messageReceived_ = Menu(&messages_, &selector, option);	
+	messageReceived_ = Container::Vertical({}, &selector);
 	//list of differents elements
-	sendButton_ = Button("SEND", [&]{messages_.push_back("add");});
+		//send message by the client app
+	sendButton_ = Button("SEND",[this]{
+			this->client_.send(this->message_);
+			messageReceived_->Add(MenuEntry(this->message_));
+			this->message_.clear();
+			});
 	exitButton_ = Button("EXIT", screen_.ExitLoopClosure());
-	textInput_ = Input(this->message_, "TAPE YOUR TEXT");
+	textInput_ = Input(&this->message_, "TAPE YOUR TEXT");
 	
 
 	//organise the differents elements
