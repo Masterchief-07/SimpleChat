@@ -181,19 +181,25 @@ ClientWindow::ClientWindow(Client& client):screen_{ftxui::ScreenInteractive::Ful
 
 }
 
+void ClientWindow::addNewMsg()
+{
+	size_t actual_size = client_.getMessages().size();
+	if(msgSize<=actual_size)
+	{
+		for(auto i=msgSize; i<actual_size; i++)
+			messageReceived_->Add(MenuEntry(client_.getMessages()[i]));
+	}
+	msgSize = actual_size;
+}
+
 void ClientWindow::render()
 {
-	//for(int i=0; i<10; i++)
-	//	this->client_.send("hello "+std::to_string(i));
-	MenuOption option = MenuOption::VerticalAnimated();
-	//std::vector<std::string> messages_ = {"hello world", "hello you"};
 	int selector=0;
 	messageReceived_ = Container::Vertical({}, &selector);
 	//list of differents elements
 		//send message by the client app
 	sendButton_ = Button("SEND",[this]{
 			this->client_.send(this->message_);
-			messageReceived_->Add(MenuEntry(this->message_));
 			this->message_.clear();
 			});
 	exitButton_ = Button("EXIT", screen_.ExitLoopClosure());
@@ -208,7 +214,9 @@ void ClientWindow::render()
 					sendButton_, exitButton_})
 			});
 
-	messageRender_ = Renderer(layouts,[this]{ return
+	messageRender_ = Renderer(layouts,[this]{ 
+				this->addNewMsg();
+				return
 				vbox({
 					messageReceived_->Render() | flex | vscroll_indicator | frame,
 					textInput_->Render() | border,

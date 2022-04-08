@@ -37,7 +37,6 @@ void Client::sendUsername()
 					close();
 					return;
 				}
-				std::cout<<"CONNECTED"<<std::endl;
 			});
 				
 }
@@ -82,7 +81,7 @@ void Client::receive()
 					close();
 					return ;
 				}
-				std::cout<<message_;
+				messagesReceive_.push_back(message_);
 				message_.clear();
 				this->receive();
 			});

@@ -14,6 +14,7 @@ class Client
 		void receive();
 		
 		const std::string getUsername() const{return username_;}
+		const std::vector<std::string>getMessages() const{ return messagesReceive_;}
 
 	private:
 		//-------METHODES-------
@@ -29,6 +30,6 @@ class Client
 		std::thread thread_;
 		std::string username_;
 		std::string message_;
-		std::list<std::pair<std::string, std::string>> messagesReceive_; //username and message
+		std::vector<std::string> messagesReceive_; //username and message
 		std::queue<std::string>messagesSend_;
 };

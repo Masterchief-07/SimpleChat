@@ -15,7 +15,8 @@ class ClientWindow
 		~ClientWindow(){}
 		void render();
 	private:
-		
+		void addNewMsg();
+		int msgSize=0;	
 		ftxui::ScreenInteractive screen_;
 		ftxui::Component messageRender_;
 		ftxui::Component messageReceived_;
