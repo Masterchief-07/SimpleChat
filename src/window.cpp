@@ -1,15 +1,22 @@
 #include <window.hpp>
+#include <sstream>
 using namespace ftxui;
 
-Window::Window()
+Window::Window():io_{}
 {
+	asio::executor_work_guard<decltype(io_.get_executor())> work{io_.get_executor()};
+	ioThr_ = std::thread([this]{this->io_.run();});
 	this->selectionWindow();
 	//this->configServer();
 	//this->configClient();
 }
 
 Window::~Window()
-{}
+{
+	this->io_.stop();
+	ioThr_.join();	
+}
+
 
 void Window::selectionWindow()
 {
@@ -91,7 +98,7 @@ void Window::configClient()
 	Component username_input = Input(&username, " ");
 	Component ip_input = Input(&server_ip, "127.0.0.1");
 	Component port_input = Input(&server_port, "60000");
-	Component create_btn = Button("CREATE", [this]{this->errorMessage("error");});
+	Component create_btn = Button("CONNECT", [this, &username, &server_ip, &server_port]{this->clientConnect(username, server_ip, server_port);});
 	Component cancel_btn = Button("CANCEL", screen.ExitLoopClosure());
 
 	auto container = Container::Vertical({
@@ -118,6 +125,24 @@ void Window::configClient()
 	
 	screen.Loop(render);
 
+}
+//configuration of the client window
+void Window::clientConnect(std::string const& username, std::string const& ip, std::string const& port)
+{
+	Client client{io_};
+	std::stringstream ss; ss<<port;
+	unsigned short numport; ss>>numport;
+	if(ss.fail())
+	{
+		this->errorMessage("error PORT");
+		return;
+	}
+	if(!client.connect(username, ip, numport))
+	{
+		this->errorMessage("ERROR CAN'T CONNECT TO THE SERVER");
+		return;
+	}
+	ClientWindow clientwindow{client};
 }
 
 void Window::serverWindow(std::string const& ip, std::string const& port)

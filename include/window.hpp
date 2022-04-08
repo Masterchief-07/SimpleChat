@@ -36,9 +36,14 @@ class Window
 		~Window();
 	
 	private:
+		//attribut
+		asio::io_context io_;
+		std::thread ioThr_;
+		//methodes
 		void selectionWindow();
 		void configServer();
 		void configClient();
+		void clientConnect(std::string const& username,  std::string const& ip, std::string const& port);
 		void serverWindow(std::string const& ip, std::string const& port);
 		void clientWindow(std::string const& username, std::string const& ip, std::string const& port);
 		void errorMessage(std::string const& ec);
