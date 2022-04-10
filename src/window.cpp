@@ -61,7 +61,7 @@ void Window::configServer()
 
 	Component ip_input = Input(&server_ip, "127.0.0.1");
 	Component port_input = Input(&server_port, "60000");
-	Component create_btn = Button("CREATE", [&]{this->serverWindow(server_ip, server_port);});
+	Component create_btn = Button("CREATE", [&]{this->serverConnect(server_ip, server_port);});
 	Component cancel_btn = Button("CANCEL", screen.ExitLoopClosure());
 
 	auto container = Container::Vertical({
@@ -145,113 +145,35 @@ void Window::clientConnect(std::string const& username, std::string const& ip, s
 	ClientWindow clientwindow{client};
 }
 
-void Window::serverWindow(std::string const& ip, std::string const& port)
+void Window::serverConnect(std::string const& ip, std::string const& port)
 {
-	auto screen = ScreenInteractive::Fullscreen();
-		auto messageList = Container::Vertical({
-			Renderer([]{return hbox({text("jonathan"),filler(), text("HELLO WORLD")});}),
-			Renderer([]{return hbox({text("jonathan"),filler(), text("HELLO WORLD")});}),
-			Renderer([]{return hbox({text("jonathan"),filler(), text("HELLO WORLD")});}),
-			Renderer([]{return hbox({text("jonathan"),filler(), text("HELLO WORLD")});}),
-			});
-
-	std::string wintitle = "message";
-
-	Component button = Button("ADD", [&]{ messageList->Add(Renderer([]{return hbox({text("jonathan"),filler(), text("HELLO WORLD")});}));
-						});
-
-	auto textScreen = Renderer([&]{
-			return window(text(wintitle), messageList->Render() | vscroll_indicator |frame| size(HEIGHT, LESS_THAN, 20))
-				| size(WIDTH, EQUAL, 80);
-			});
-	auto textScreen2 = Renderer([&]{
-			return window(text("CLIENTS"), text("text screen") | center) | flex;
-			});
-	
-
-	screen.Loop(Container::Horizontal({textScreen, textScreen2, button}));
-	
+	Server server{io_};	
+	std::stringstream ss; ss<<port;
+	unsigned short numport; ss>>numport;
+	if(ss.fail())
+	{
+		this->errorMessage("error PORT");
+		return;
+	}
+	if(!server.start(ip, numport))
+	{
+		this->errorMessage("ERROR CAN'T CREATE THE SERVER");
+		return;
+	}
+	ServerWindow serverWindow{server};
 
 
 }
 
-void Window::clientWindow(std::string const& username, std::string const& ip, std::string const& port)
-{	
-	
-
-}
 void Window::errorMessage(std::string const& ec)
 {
 	auto screen = ScreenInteractive::Fullscreen();
-	auto container = Container::Horizontal({
-		Button("OK", screen.ExitLoopClosure()),
+	auto button = Button("QUI", screen.ExitLoopClosure());
+	auto render = Renderer(button ,[&]{
+			return vbox({
+			text(ec) | center | border,
+			button->Render(),
+			});
 		});
-	auto render = Renderer(container, [&]{ return
-			hbox({
-				vbox({
-					text(ec) | bold,
-					container->Render(),
-					}) | center,
-				}) | center;
-			});
-
 	screen.Loop(render);
-}
-
-
-
-ClientWindow::ClientWindow(Client& client):screen_{ftxui::ScreenInteractive::Fullscreen()}, message_{}, client_{client}
-{
-	this->render();
-
-}
-
-void ClientWindow::addNewMsg()
-{
-	size_t actual_size = client_.getMessages().size();
-	if(msgSize<=actual_size)
-	{
-		for(auto i=msgSize; i<actual_size; i++)
-			messageReceived_->Add(MenuEntry(client_.getMessages()[i]));
-	}
-	msgSize = actual_size;
-}
-
-void ClientWindow::render()
-{
-	int selector=0;
-	messageReceived_ = Container::Vertical({}, &selector);
-	//list of differents elements
-		//send message by the client app
-	sendButton_ = Button("SEND",[this]{
-			this->client_.send(this->message_);
-			this->message_.clear();
-			});
-	exitButton_ = Button("EXIT", screen_.ExitLoopClosure());
-	textInput_ = Input(&this->message_, "TAPE YOUR TEXT");
-	
-
-	//organise the differents elements
-	Component layouts = Container::Vertical({
-			messageReceived_,
-			textInput_,
-			Container::Horizontal({
-					sendButton_, exitButton_})
-			});
-
-	messageRender_ = Renderer(layouts,[this]{ 
-				this->addNewMsg();
-				return
-				vbox({
-					messageReceived_->Render() | flex | vscroll_indicator | frame,
-					textInput_->Render() | border,
-					hbox({
-						sendButton_->Render(),
-						exitButton_->Render(),
-					}) | center,
-				}) | flex;
-			});
-
-	screen_.Loop(messageRender_);
-
 }

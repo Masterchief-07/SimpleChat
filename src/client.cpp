@@ -7,6 +7,7 @@ Client::Client(asio::io_context& io):io_{io},strand_{io_},socket_{io_},endpoint_
 
 Client::~Client()
 {
+	this->close();
 }
 
 
@@ -22,6 +23,7 @@ bool Client::connect(std::string const& username, std::string const& ip, unsigne
 		std::cerr<<"ERROR: "<<ec.message()<<std::endl;
 		return false;
 	}
+	state = true;
 	this->sendUsername();
 	this->receive();
 	return true;
@@ -47,7 +49,7 @@ void Client::send(std::string const& message)
 	messagesSend_.push(message);
 	if(state)
 	{
-		asio::post(io_,strand_.wrap( [&](){
+		asio::post(io_,strand_.wrap([&](){
 			this->doSend();
 		}));
 	}
@@ -81,6 +83,7 @@ void Client::receive()
 					close();
 					return ;
 				}
+				std::cout<<message_;
 				messagesReceive_.push_back(message_);
 				message_.clear();
 				this->receive();
@@ -90,6 +93,7 @@ void Client::receive()
 
 void Client::close()
 {
+	state = false;
 	this->socket_.close();
 }
 

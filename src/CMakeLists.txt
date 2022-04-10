@@ -7,5 +7,5 @@ target_include_directories(connection PRIVATE ../include PUBLIC ../asio/asio/inc
 add_library(server OBJECT server.cpp)
 target_include_directories(server PRIVATE ../include PUBLIC ../asio/asio/include)
 
-add_library(window OBJECT window.cpp)
+add_library(window OBJECT window.cpp clientwindow.cpp serverwindow.cpp)
 target_include_directories(window PRIVATE ../include PUBLIC ../FTXUI/include PUBLIC ../asio/asio/include)

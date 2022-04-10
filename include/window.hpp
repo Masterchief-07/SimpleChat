@@ -7,27 +7,8 @@
 #include <thread>
 #include <client.hpp>
 #include <server.hpp>
-
-class ClientWindow
-{
-	public:
-		ClientWindow(Client& client);
-		~ClientWindow(){}
-		void render();
-	private:
-		void addNewMsg();
-		int msgSize=0;	
-		ftxui::ScreenInteractive screen_;
-		ftxui::Component messageRender_;
-		ftxui::Component messageReceived_;
-		ftxui::Component sendButton_;
-		ftxui::Component exitButton_;
-		ftxui::Component textInput_;
-		std::string message_;
-		Client &client_;
-
-};
-
+#include <clientwindow.hpp>
+#include <serverwindow.hpp>
 
 class Window
 {
@@ -44,8 +25,7 @@ class Window
 		void configServer();
 		void configClient();
 		void clientConnect(std::string const& username,  std::string const& ip, std::string const& port);
-		void serverWindow(std::string const& ip, std::string const& port);
-		void clientWindow(std::string const& username, std::string const& ip, std::string const& port);
+		void serverConnect(std::string const& ip, std::string const& port);
 		void errorMessage(std::string const& ec);
 
 };

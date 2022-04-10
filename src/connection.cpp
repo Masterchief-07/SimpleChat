@@ -35,14 +35,16 @@ void Connection::read()
 				}
 				else if(ec)
 				{
-					std::cout<<"error reading"<<"\n";
+					//std::cout<<"error reading"<<"\n";
 					self->close();
 					return;
 				}
 				else
 				{
-					std::cout<<self->message_;
-					this->server_.sendToAll(this->username_+": "+self->message_);
+					//std::cout<<self->message_;
+					std::string msg = this->username_+": "+self->message_;
+					this->server_.addMsg(msg);
+					this->server_.sendToAll(msg);
 				}
 				self->message_.clear();
 				self->read();

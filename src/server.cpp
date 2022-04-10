@@ -1,21 +1,25 @@
 #include <server.hpp>
 using asio::ip::tcp;
 
-Server::Server() noexcept :io_{}, acceptor_{io_,{tcp::v4(), 60000}}
+Server::Server(asio::io_context& io) noexcept :io_{io},strand_{io_}, acceptor_{io_}
 {
 
 }
 
-void Server::start()
+bool Server::start(std::string const& ip, unsigned short port)
 {
+	try
+	{
+		asio::ip::tcp::endpoint endpoint{asio::ip::make_address(ip), port};
+		acceptor_.open(endpoint.protocol());
+		acceptor_.bind(endpoint);
+	}
+	catch(std::exception& ec)
+	{
+		return false;
+	}
 	this->accept();
-	this->run();
-}
-
-void Server::run()
-{
-	//ioThr_ = std::make_unique<std::thread>([this](){this->io_.run();});
-	io_.run();
+	return true;
 }
 
 void Server::accept()
@@ -55,4 +59,9 @@ void Server::sendToAll(std::string message)
 void Server::leave(ConnectionPtr connect)
 {
 	this->connectSet_.erase(connect);		
+}
+
+void Server::addMsg(std::string const& msg)
+{
+	strand_.post([this, &msg]{this->messages_.push_back(msg);});
 }

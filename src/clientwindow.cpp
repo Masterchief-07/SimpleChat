@@ -1,34 +1,33 @@
-#include<serverwindow.hpp>
-
+#include <clientwindow.hpp>
+#include <sstream>
 using namespace ftxui;
-
 //-------------------------CLIENT-----------------------------------------------
 
-ServerWindow::ServerWindow(Server& server):screen_{ftxui::ScreenInteractive::Fullscreen()}, message_{}, server_{server}
+ClientWindow::ClientWindow(Client& client):screen_{ftxui::ScreenInteractive::Fullscreen()}, message_{}, client_{client}
 {
 	this->render();
 
 }
 
-void ServerWindow::addNewMsg()
+void ClientWindow::addNewMsg()
 {
-	size_t actual_size = server_.getMessages().size();
+	size_t actual_size = client_.getMessages().size();
 	if(msgSize<=actual_size)
 	{
 		for(auto i=msgSize; i<actual_size; i++)
-			messageReceived_->Add(MenuEntry(server_.getMessages()[i]));
+			messageReceived_->Add(MenuEntry(client_.getMessages()[i]));
 	}
 	msgSize = actual_size;
 }
 
-void ServerWindow::render()
+void ClientWindow::render()
 {
 	int selector=0;
 	messageReceived_ = Container::Vertical({}, &selector);
 	//list of differents elements
 		//send message by the client app
 	sendButton_ = Button("SEND",[this]{
-			this->server_.sendToAll(this->message_);
+			this->client_.send(this->message_);
 			this->message_.clear();
 			});
 	exitButton_ = Button("EXIT", screen_.ExitLoopClosure());
@@ -59,4 +58,3 @@ void ServerWindow::render()
 	screen_.Loop(messageRender_);
 
 }
-

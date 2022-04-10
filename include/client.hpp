@@ -27,6 +27,7 @@ class Client
 		asio::io_context::strand strand_;
 		asio::ip::tcp::socket socket_;
 		asio::ip::tcp::endpoint endpoint_;
+		bool state;
 		std::thread thread_;
 		std::string username_;
 		std::string message_;
