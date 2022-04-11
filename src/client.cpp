@@ -43,7 +43,7 @@ void Client::sendUsername()
 				
 }
 
-void Client::send(std::string message)
+void Client::send(std::string const& message)
 {
 	bool state = messagesSend_.empty();
 	messagesSend_.push(message+"\n");

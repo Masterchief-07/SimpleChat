@@ -21,6 +21,16 @@ void ServerWindow::addNewMsg()
 	msgSize = actual_size;
 }
 
+Component ServerWindow::getClientRender_()
+{
+	clientMenu_ = Menu(&clientNameList_, &clientSelected_);
+	return  Renderer(clientMenu_, [&]{
+			clientNameList_ = server_.getClientName();
+			return window(text("Client " + std::to_string(clientNameList_.size())),clientMenu_->Render());
+			});
+	
+}
+
 void ServerWindow::render()
 {
 	int selector=0;
@@ -56,7 +66,10 @@ void ServerWindow::render()
 				}) | flex;
 			});
 
-	screen_.Loop(messageRender_);
+	auto clientRender = getClientRender_();
+
+	screen_.Loop(Container::Horizontal({messageRender_, clientRender}));
+	//screen_.Loop(messageRender_);
 
 }
 

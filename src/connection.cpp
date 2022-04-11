@@ -3,6 +3,11 @@ Connection::Connection(asio::ip::tcp::socket socket, Server& server):socket_{std
 {
 }
 
+Connection::~Connection()
+{
+	this->close();
+}
+
 void Connection::connect()
 {
 	this->readUsername();

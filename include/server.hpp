@@ -20,18 +20,22 @@ class Server
 {
 	public:
 		Server(asio::io_context& io) noexcept;
+		~Server();
 		bool start(std::string const& ip, unsigned short port);
 		void sendTo(std::string message, ConnectionPtr connect);
 		void sendToAll(std::string message);
 		void leave(ConnectionPtr connect);
 		void addMsg(std::string const& msg);
 		const std::vector<std::string>& getMessages()const{return messages_;}
+		const size_t getNumClient() const {return connectSet_.size();}
+		const std::vector<std::string> getClientName();
+		void close();
 
 	private:
 		void run();
 		void accept();
+		bool state;
 		asio::io_context& io_;
-		asio::io_context::strand strand_;
 		asio::ip::tcp::acceptor acceptor_;
 		//std::string message_;
 		//std::unique_ptr<std::thread> ioThr_;

@@ -19,6 +19,7 @@ class ClientWindow
 		void render();
 	private:
 		void addNewMsg();
+		bool verifieState();
 		int msgSize=0;	
 		ftxui::ScreenInteractive screen_;
 		ftxui::Component messageRender_;

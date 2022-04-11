@@ -20,8 +20,20 @@ void ClientWindow::addNewMsg()
 	msgSize = actual_size;
 }
 
+bool ClientWindow::verifieState()
+{
+	if(!client_.getState())
+	{
+		this->screen_.ExitLoopClosure();
+		return false;
+	}
+	return true;
+}
+
 void ClientWindow::render()
 {
+	bool state;
+	std::string stateText;
 	int selector=0;
 	messageReceived_ = Container::Vertical({}, &selector);
 	//list of differents elements
@@ -42,11 +54,14 @@ void ClientWindow::render()
 					sendButton_, exitButton_})
 			});
 
-	messageRender_ = Renderer(layouts,[this]{ 
+	messageRender_ = Renderer(layouts,[&]{ 
 				this->addNewMsg();
+				state = this->verifieState();
+				stateText = state? "connected":"Disconnected";
 				return
 				vbox({
-					messageReceived_->Render() | flex | vscroll_indicator | frame,
+					window(text(stateText),
+					messageReceived_->Render() | flex | vscroll_indicator | frame),
 					textInput_->Render() | border,
 					hbox({
 						sendButton_->Render(),

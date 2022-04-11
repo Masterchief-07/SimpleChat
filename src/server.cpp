@@ -1,10 +1,16 @@
 #include <server.hpp>
 using asio::ip::tcp;
 
-Server::Server(asio::io_context& io) noexcept :io_{io},strand_{io_}, acceptor_{io_}
+Server::Server(asio::io_context& io) noexcept :io_{io}, acceptor_{io_}
 {
 
 }
+
+Server::~Server()
+{
+	this->close();
+}
+
 
 bool Server::start(std::string const& ip, unsigned short port)
 {
@@ -17,6 +23,7 @@ bool Server::start(std::string const& ip, unsigned short port)
 	}
 	catch(std::exception& ec)
 	{
+		this->close();
 		return false;
 	}
 	this->accept();
@@ -64,5 +71,23 @@ void Server::leave(ConnectionPtr connect)
 
 void Server::addMsg(std::string const& msg)
 {
-	strand_.post([this, &msg]{this->messages_.push_back(msg);});
+	this->messages_.push_back(msg);
+}
+
+const std::vector<std::string> Server::getClientName()
+{
+	std::vector<std::string> clientName{this->connectSet_.size()};
+	size_t i{0};
+	for(auto const& connect : connectSet_)
+	{
+		clientName[i] = connect->getUsername();
+		++i;
+	}
+	return clientName;
+}
+
+void Server::close()
+{
+	this->acceptor_.cancel();
+	this->acceptor_.close();
 }
