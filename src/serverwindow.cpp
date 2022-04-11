@@ -71,7 +71,12 @@ void ServerWindow::render()
 				}) | flex;
 			});
 
-	auto clientRender = getClientRender_();
+	clientMenu_ = Menu(&clientNameList_, &clientSelected_);
+	auto clientRender = Renderer(clientMenu_, [&]{
+			clientNameList_ = server_.getClientName();
+			return window(text("Client " + std::to_string(clientNameList_.size())),clientMenu_->Render());
+			});
+
 
 	screen_.Loop(Container::Horizontal({messageRender_, clientRender}));
 	//screen_.Loop(messageRender_);

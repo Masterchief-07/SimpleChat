@@ -14,7 +14,6 @@ class Connection: public std::enable_shared_from_this<Connection>
 {
 	public:
 		Connection(asio::ip::tcp::socket socket, Server& server);
-		~Connection();
 		void connect();
 		void write(std::string message);
 		void close();
