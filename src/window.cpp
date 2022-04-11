@@ -160,8 +160,14 @@ void Window::serverConnect(std::string const& ip, std::string const& port)
 		this->errorMessage("ERROR CAN'T CREATE THE SERVER");
 		return;
 	}
-	ServerWindow serverWindow{server};
-
+	try
+	{
+		ServerWindow serverWindow{server};
+	}
+	catch(std::exception& ec)
+	{
+		std::cerr<<ec.what()<<std::endl;
+	}
 
 }
 

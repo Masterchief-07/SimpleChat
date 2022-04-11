@@ -16,7 +16,7 @@ class ServerWindow
 {
 	public:
 		ServerWindow(Server& server);
-		~ServerWindow(){}
+		~ServerWindow();
 		void render();
 	private:
 		void addNewMsg();

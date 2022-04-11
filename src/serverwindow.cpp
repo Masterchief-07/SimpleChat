@@ -10,6 +10,11 @@ ServerWindow::ServerWindow(Server& server):screen_{ftxui::ScreenInteractive::Ful
 
 }
 
+ServerWindow::~ServerWindow()
+{
+	this->server_.close();
+}
+
 void ServerWindow::addNewMsg()
 {
 	size_t actual_size = server_.getMessages().size();
