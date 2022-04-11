@@ -147,6 +147,8 @@ void Window::clientConnect(std::string const& username, std::string const& ip, s
 
 void Window::serverConnect(std::string const& ip, std::string const& port)
 {
+	try
+	{
 	Server server{io_};	
 	std::stringstream ss; ss<<port;
 	unsigned short numport; ss>>numport;
@@ -160,9 +162,8 @@ void Window::serverConnect(std::string const& ip, std::string const& port)
 		this->errorMessage("ERROR CAN'T CREATE THE SERVER");
 		return;
 	}
-	try
-	{
 		ServerWindow serverWindow{server};
+		server.close();
 	}
 	catch(std::exception& ec)
 	{

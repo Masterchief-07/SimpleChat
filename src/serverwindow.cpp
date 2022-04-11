@@ -26,16 +26,6 @@ void ServerWindow::addNewMsg()
 	msgSize = actual_size;
 }
 
-Component ServerWindow::getClientRender_()
-{
-	clientMenu_ = Menu(&clientNameList_, &clientSelected_);
-	return  Renderer(clientMenu_, [&]{
-			clientNameList_ = server_.getClientName();
-			return window(text("Client " + std::to_string(clientNameList_.size())),clientMenu_->Render());
-			});
-	
-}
-
 void ServerWindow::render()
 {
 	int selector=0;

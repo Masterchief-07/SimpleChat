@@ -24,7 +24,7 @@ bool ClientWindow::verifieState()
 {
 	if(!client_.getState())
 	{
-		this->screen_.ExitLoopClosure();
+		//this->screen_.ExitLoopClosure();
 		return false;
 	}
 	return true;

@@ -21,7 +21,6 @@ class ServerWindow
 	private:
 		void addNewMsg();
 		int msgSize=0;	
-		ftxui::Component getClientRender_();
 		ftxui::ScreenInteractive screen_;
 		ftxui::Component messageRender_;
 		ftxui::Component messageReceived_;

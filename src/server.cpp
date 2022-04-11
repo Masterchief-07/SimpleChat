@@ -28,13 +28,12 @@ void Server::accept()
 {
 	acceptor_.async_accept([this](asio::error_code ec, tcp::socket socket)
 		{
-			this->accept();
-			//connectList_.push_back(std::make_shared<Connection>(std::move(socket)));
 			if(ec)
 			{
 				std::cerr<<"ACCEPTOR ERROR\n";
 				return;
 			}
+			this->accept();
 			auto newconnect = std::make_shared<Connection>(std::move(socket), *this);
 			newconnect->connect();
 			connectSet_.insert(std::move(newconnect));
