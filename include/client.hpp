@@ -10,7 +10,7 @@ class Client
 		Client(asio::io_context& io);
 		~Client();
 		bool connect(std::string const& username, std::string const& ip, unsigned short port);
-		void send(std::string const& message);
+		void send(std::string message);
 		void receive();
 		
 		const std::string getUsername() const{return username_;}
@@ -19,6 +19,7 @@ class Client
 	private:
 		//-------METHODES-------
 		void doSend();
+		void doSend(std::string message);
 		void sendUsername();
 		void close();
 

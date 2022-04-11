@@ -13,6 +13,7 @@ bool Server::start(std::string const& ip, unsigned short port)
 		asio::ip::tcp::endpoint endpoint{asio::ip::make_address(ip), port};
 		acceptor_.open(endpoint.protocol());
 		acceptor_.bind(endpoint);
+		acceptor_.listen();
 	}
 	catch(std::exception& ec)
 	{
