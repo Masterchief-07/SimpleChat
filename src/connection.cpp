@@ -1,7 +1,7 @@
 #include <connection.hpp>
 Connection::Connection(asio::ip::tcp::socket socket, Server& server):socket_{std::move(socket)}, server_{server}, isConnected_{true}
 {
-	this->isConnected = true;
+	this->isConnected_ = true;
 }
 
 void Connection::connect()
@@ -9,7 +9,7 @@ void Connection::connect()
 	this->readUsername();
 }
 
-Connected::~Connected()
+Connection::~Connection()
 {
 	socket_.close();
 }
