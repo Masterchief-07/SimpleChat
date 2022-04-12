@@ -9,6 +9,11 @@ ClientWindow::ClientWindow(Client& client):screen_{ftxui::ScreenInteractive::Ful
 
 }
 
+ClientWindow::~ClientWindow()
+{
+	this->client_.close();
+}
+
 void ClientWindow::addNewMsg()
 {
 	size_t actual_size = client_.getMessages().size();

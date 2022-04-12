@@ -15,7 +15,7 @@ class ClientWindow
 {
 	public:
 		ClientWindow(Client& client);
-		~ClientWindow(){}
+		~ClientWindow();
 		void render();
 	private:
 		void addNewMsg();

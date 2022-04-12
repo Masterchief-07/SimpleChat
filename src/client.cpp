@@ -5,12 +5,6 @@ Client::Client(asio::io_context& io):io_{io},strand_{io_},socket_{io_},endpoint_
 {
 }
 
-Client::~Client()
-{
-	this->close();
-}
-
-
 bool Client::connect(std::string const& username, std::string const& ip, unsigned short port)
 {
 	username_ = username;
@@ -31,12 +25,11 @@ bool Client::connect(std::string const& username, std::string const& ip, unsigne
 
 void Client::sendUsername()
 {
-	asio::async_write(socket_, asio::buffer(username_+"\n"), [this](asio::error_code ec, size_t transfererd)
+	asio::async_write(socket_, asio::buffer(username_+"\n"), [](asio::error_code ec, size_t transfererd)
 			{
 				if(ec)
 				{
 					std::cerr<<"can't init the connection"<<std::endl;
-					close();
 					return;
 				}
 			});
@@ -52,12 +45,11 @@ void Client::send(std::string const& message)
 
 void Client::doSend(std::string const& msg)
 {
-	asio::async_write(socket_, asio::buffer(msg +"\n"), [this](asio::error_code ec, size_t transfered)
+	asio::async_write(socket_, asio::buffer(msg +"\n"), [](asio::error_code ec, size_t transfered)
 		{
 			if(ec)
 			{
 				std::cerr<<"ERROR SENDING"<<std::endl;
-				this->close();
 				return;
 			}
 	});
@@ -72,7 +64,6 @@ void Client::receive()
 				if(ec)
 				{
 					std::cerr<<"MESSAGE NOT RECEIVED"<<std::endl;
-					close();
 					return ;
 				}
 				std::cout<<message_;
