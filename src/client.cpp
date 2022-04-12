@@ -45,20 +45,14 @@ void Client::sendUsername()
 
 void Client::send(std::string const& message)
 {
-	bool state = messagesSend_.empty();
-	messagesSend_.push(message+"\n");
-	if(state)
-	{
-		asio::post(io_,[&](){
-			this->doSend();
-		});
-	}
+	asio::post(io_, strand_.wrap([&, message](){
+			this->doSend(message);}));
 }
 
 
-void Client::doSend()
+void Client::doSend(std::string const& msg)
 {
-	asio::async_write(socket_, asio::buffer(messagesSend_.front().data(), messagesSend_.front().length()), [this](asio::error_code ec, size_t transfered)
+	asio::async_write(socket_, asio::buffer(msg +"\n"), [this](asio::error_code ec, size_t transfered)
 		{
 			if(ec)
 			{
@@ -66,12 +60,9 @@ void Client::doSend()
 				this->close();
 				return;
 			}
-			messagesSend_.pop();
-			if(!messagesSend_.empty())
-				this->doSend();
 	});
-}
 
+}
 
 
 void Client::receive()

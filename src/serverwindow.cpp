@@ -4,7 +4,7 @@ using namespace ftxui;
 
 //-------------------------CLIENT-----------------------------------------------
 
-ServerWindow::ServerWindow(Server& server):screen_{ftxui::ScreenInteractive::Fullscreen()}, message_{}, server_{server}
+ServerWindow::ServerWindow(Server& server):server_{server}, message_{}, messagesList_{}, clientNameList_{}
 {
 	this->render();
 
@@ -21,23 +21,26 @@ void ServerWindow::addNewMsg()
 	if(msgSize<=actual_size)
 	{
 		for(auto i=msgSize; i<actual_size; i++)
-			messageReceived_->Add(MenuEntry(server_.getMessages()[i]));
+			messagesList_.push_back(server_.getMessages()[i]);
+			//messageReceived_->Add(MenuEntry(server_.getMessages()[i]));
+			
 	}
 	msgSize = actual_size;
 }
 
 void ServerWindow::render()
 {
+	ScreenInteractive screen_{ScreenInteractive::Fullscreen()};
 	int selector=0;
-	messageReceived_ = Container::Vertical({}, &selector);
+	Component messageReceived_= Menu(&messagesList_, &selector);
 	//list of differents elements
 		//send message by the client app
-	sendButton_ = Button("SEND",[this]{
+	Component sendButton_= Button("SEND",[&]{
 			this->server_.sendToAll(this->message_);
 			this->message_.clear();
 			});
-	exitButton_ = Button("EXIT", screen_.ExitLoopClosure());
-	textInput_ = Input(&this->message_, "TAPE YOUR TEXT");
+	Component exitButton_ = Button("EXIT", screen_.ExitLoopClosure());
+	Component textInput_ = Input(&this->message_, "TAPE YOUR TEXT");
 	
 
 	//organise the differents elements
@@ -48,11 +51,11 @@ void ServerWindow::render()
 					sendButton_, exitButton_})
 			});
 
-	messageRender_ = Renderer(layouts,[this]{ 
+	Component messageRender_= Renderer(layouts,[&]{ 
 				this->addNewMsg();
 				return
 				vbox({
-					messageReceived_->Render() | flex | vscroll_indicator | frame,
+					messageReceived_->Render() | flex | vscroll_indicator | frame |border,
 					textInput_->Render() | border,
 					hbox({
 						sendButton_->Render(),
@@ -61,7 +64,7 @@ void ServerWindow::render()
 				}) | flex;
 			});
 
-	clientMenu_ = Menu(&clientNameList_, &clientSelected_);
+	Component clientMenu_ = Menu(&clientNameList_, &clientSelected_);
 	auto clientRender = Renderer(clientMenu_, [&]{
 			clientNameList_ = server_.getClientName();
 			return window(text("Client " + std::to_string(clientNameList_.size())),clientMenu_->Render());

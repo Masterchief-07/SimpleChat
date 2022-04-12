@@ -20,17 +20,12 @@ class ServerWindow
 		void render();
 	private:
 		void addNewMsg();
-		int msgSize=0;	
-		ftxui::ScreenInteractive screen_;
-		ftxui::Component messageRender_;
-		ftxui::Component messageReceived_;
-		ftxui::Component sendButton_;
-		ftxui::Component exitButton_;
-		ftxui::Component textInput_;
-		std::string message_;
+		int msgSize{0};	
 		Server &server_;
+		std::string message_;
+		std::vector<std::string> messagesList_;
 		//--------client list------
 		std::vector<std::string> clientNameList_;
 		int clientSelected_{0};
-		ftxui::Component clientMenu_;
+		
 };

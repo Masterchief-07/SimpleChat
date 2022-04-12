@@ -20,6 +20,7 @@ class Client
 	private:
 		//-------METHODES-------
 		void doSend();
+		void doSend(std::string const& msg);
 		void sendUsername();
 		void close();
 

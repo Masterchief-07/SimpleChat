@@ -18,6 +18,7 @@ void Connection::readUsername()
 				{
 					std::cerr<<"USERNAME ERROR"<<std::endl;
 					self->close();
+					return;
 				}
 				std::cout<<"USERNAME: "<<username_<<std::endl;
 				this->read();

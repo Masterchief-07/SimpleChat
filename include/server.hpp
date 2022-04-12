@@ -40,7 +40,6 @@ class Server
 		//std::unique_ptr<std::thread> ioThr_;
 		ConnectionSet connectSet_;
 		std::vector<std::string> messages_{};
-		std::mutex mutex_;
 
 
 };

@@ -17,7 +17,6 @@ bool Server::start(std::string const& ip, unsigned short port)
 	}
 	catch(std::exception& ec)
 	{
-		this->close();
 		return false;
 	}
 	this->accept();
@@ -59,7 +58,6 @@ void Server::sendToAll(std::string message)
 
 void Server::leave(ConnectionPtr connect)
 {
-	std::scoped_lock{mutex_};
 	this->connectSet_.erase(connect);		
 }
 
@@ -70,7 +68,6 @@ void Server::addMsg(std::string const& msg)
 
 const std::vector<std::string> Server::getClientName()
 {
-	std::scoped_lock{mutex_};
 	std::vector<std::string> clientName{this->connectSet_.size()};
 	size_t i{0};
 	for(auto const& connect : connectSet_)
