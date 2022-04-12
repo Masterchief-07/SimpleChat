@@ -12,7 +12,8 @@ class Client
 		void send(std::string const& message);
 		void receive();
 		void close();
-		
+	
+		const std::string getServerIp() const{return socket_.remote_endpoint().address().to_string();}
 		const std::string getUsername() const{return username_;}
 		const std::vector<std::string>getMessages() const{ return messagesReceive_;}
 		const bool getState() const {return state;}
@@ -28,7 +29,7 @@ class Client
 		asio::io_context::strand strand_;
 		asio::ip::tcp::socket socket_;
 		asio::ip::tcp::endpoint endpoint_;
-		bool state;
+		bool state{false};
 		std::thread thread_;
 		std::string username_;
 		std::string message_;

@@ -82,4 +82,5 @@ void Server::close()
 {
 	this->acceptor_.cancel();
 	this->acceptor_.close();
+	connectSet_.clear();
 }

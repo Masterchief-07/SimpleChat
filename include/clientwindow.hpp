@@ -21,12 +21,7 @@ class ClientWindow
 		void addNewMsg();
 		bool verifieState();
 		int msgSize=0;	
-		ftxui::ScreenInteractive screen_;
-		ftxui::Component messageRender_;
 		ftxui::Component messageReceived_;
-		ftxui::Component sendButton_;
-		ftxui::Component exitButton_;
-		ftxui::Component textInput_;
 		std::string message_;
 		Client &client_;
 };

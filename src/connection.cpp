@@ -1,11 +1,17 @@
 #include <connection.hpp>
 Connection::Connection(asio::ip::tcp::socket socket, Server& server):socket_{std::move(socket)}, server_{server}, isConnected_{true}
 {
+	this->isConnected = true;
 }
 
 void Connection::connect()
 {
 	this->readUsername();
+}
+
+Connected::~Connected()
+{
+	socket_.close();
 }
 
 //get the username from client
@@ -17,10 +23,9 @@ void Connection::readUsername()
 				if(ec)
 				{
 					std::cerr<<"USERNAME ERROR"<<std::endl;
-					self->close();
 					return;
 				}
-				std::cout<<"USERNAME: "<<username_<<std::endl;
+				//std::cout<<"USERNAME: "<<username_<<std::endl;
 				this->read();
 			});
 }
@@ -31,13 +36,13 @@ void Connection::read()
 			{
 				if(self->message_[0] == 'S' && self->message_[1] == 'T'&& self->message_[2] == 'O'&& self->message_[3] == 'P')
 				{
-					self->close();
+					this->close();
 					return ;
 				}
 				else if(ec)
 				{
 					//std::cout<<"error reading"<<"\n";
-					self->close();
+					this->close();
 					return;
 				}
 				else
@@ -66,9 +71,11 @@ void Connection::write(std::string message)
 
 void Connection::close()
 {
-	this->isConnected_ = false;
-	this->socket_.close();
-	this->server_.leave(shared_from_this());
+	if(isConnected_)
+	{
+		this->isConnected_ = false;
+		this->server_.leave(shared_from_this());
+	}
 }
 
 

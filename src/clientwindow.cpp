@@ -3,10 +3,9 @@
 using namespace ftxui;
 //-------------------------CLIENT-----------------------------------------------
 
-ClientWindow::ClientWindow(Client& client):screen_{ftxui::ScreenInteractive::Fullscreen()}, message_{}, client_{client}
+ClientWindow::ClientWindow(Client& client): message_{}, client_{client}
 {
 	this->render();
-
 }
 
 ClientWindow::~ClientWindow()
@@ -37,21 +36,34 @@ bool ClientWindow::verifieState()
 
 void ClientWindow::render()
 {
+	ftxui::ScreenInteractive screen_{ftxui::ScreenInteractive::Fullscreen()};
 	bool state;
 	std::string stateText;
 	int selector=0;
 	messageReceived_ = Container::Vertical({}, &selector);
 	//list of differents elements
 		//send message by the client app
-	sendButton_ = Button("SEND",[this]{
+	Component sendButton_ = Button("SEND",[this]{
 			this->client_.send(this->message_);
 			this->message_.clear();
 			});
-	exitButton_ = Button("EXIT", screen_.ExitLoopClosure());
-	textInput_ = Input(&this->message_, "TAPE YOUR TEXT");
+	Component exitButton_ = Button("EXIT", screen_.ExitLoopClosure());
+	Component textInput_ = Input(&this->message_, "TAPE YOUR TEXT");
 	
 
-	//organise the differents elements
+
+	//header render
+	Component headerRender_ = Renderer([this]{
+			return hbox({
+					text("USERNAME: "+client_.getUsername()) | color(Color::Palette16::Green) ,
+					separator(),
+					text("CONNECTED TO: "+client_.getServerIp())
+			
+				});
+			});
+
+	//message render
+		//organise the differents elements
 	Component layouts = Container::Vertical({
 			messageReceived_,
 			textInput_,
@@ -59,7 +71,7 @@ void ClientWindow::render()
 					sendButton_, exitButton_})
 			});
 
-	messageRender_ = Renderer(layouts,[&]{ 
+	Component messageRender_= Renderer(layouts,[&]{ 
 				this->addNewMsg();
 				state = this->verifieState();
 				stateText = state? "connected":"Disconnected";
@@ -75,6 +87,11 @@ void ClientWindow::render()
 				}) | flex;
 			});
 
-	screen_.Loop(messageRender_);
+	//main container
+	Component mainLayouts = Container::Vertical({
+					headerRender_,
+					messageRender_
+					});
+	screen_.Loop(mainLayouts);
 
 }
